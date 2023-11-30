@@ -10,6 +10,9 @@
 #include <stdio.h>
 //manipulacion de cadenas
 #include <string.h>
+#define TAM_NOM 33
+#define TAM_CON 9
+
 
 typedef struct Saldo{
     int pesos;
@@ -17,10 +20,10 @@ typedef struct Saldo{
 } Saldo;
 
 typedef struct Usuario{
-    char nombre[33];
+    char nombre[TAM_NOM];
     int num_cuenta;
     Saldo saldo;
-    char contraseña[9];
+    char contrasena[TAM_CON];
     int nip;
     struct Usuario* next;
     struct Usuario* prev;
@@ -30,37 +33,43 @@ typedef struct Banco{
     Usuario* first;
     Usuario* last;
     Usuario* cursor;
+    Usuario* cursor2;
     int len;
 } Banco;
-//Declaracion de funciones
-Banco* Banco_New();
-void Cuenta_Nueva(Banco *this);
-Usuario* Usuario_New(int num_cuenta, char* nombre,
-                     char* contraseña, int nip);
-void Banco_MakeEmpty(Banco *this);
+
+//               BANCO            //
+Banco* Banco_New(); 
+void Banco_Push_Back(Banco *this, Usuario *n);
 void Banco_Pop_Front(Banco *this);
-void Banco_Push_Back(Banco *this);
+void Banco_MakeEmpty(Banco *this);
+void Banco_Delete(Banco** this);
 int Banco_Num_Usuarios(Banco *this);
 void Banco_Print_Usuarios(Banco* this);
-void Banco_Delete( Banco *this);
-bool Banco_vacio(Banco *this);
-//funciones para iniciar sesión 
-//si se puede poner la ñ?
-void Banco_find_cuenta(Banco* this, int cuenta);
-void Banco_cmp_contraseña(Banco* this, char []);
-void Usuario_Menu(Banco* this);
-//Funciones a las que el usuario tiene acceso
+bool Banco_Vacio(Banco *this);
+bool Banco_Find_Usuario(Banco* this, char *usuario);
+bool Banco_Find_NumCuenta(Banco* this, int num);
+bool Banco_Find_NumCuenta2(Banco* this, int num);
+//              USUARIO           //
+Usuario* Usuario_New(Banco *this, char* nombre, char* contrasena, int nip);
+void Usuario_Next(Banco* this);
 void Usuario_Imprimir_Datos(Banco* this);
-void Usuario_Cambio_Contraseña(Banco* this);
-void Usuario_Transferencia(Banco* this, Banco* other,
-                           int pesos, int centavos, int nip);
-void Usuario_retiro(Usuario* this, int pesos, int centavos);
-
-//Funcion auxiliar oara administrar las transacciones
+void Cuenta_Nueva(Banco *this);
+void Cuenta_Nueva_B(Banco *this);
+void Usuario_Delete(Banco **this);
+void Usuario_DepositarSaldo(Usuario* this, int pesos, int centavos);
+void Usuario_RetirarSaldo(Usuario* this, int pesos, int centavos);
+void Usuario_Transferir(Banco* this, int pesos, int centavos);
+void Usuario_Cambio_Contrasena(Banco* this, char* contrasena);
+char* Usuario_Nombre(Banco* this);
+int UsuarioGetNumCuenta(Banco* this);
+Saldo Usuario_Saldo(Banco* this);
+void Banco_Menu(Banco* this);
+void Usuario_Menu(Banco* this);
+void Iniciar_sesion(Banco *this);
+//            AUXILIARES          //
+bool Cmp_Cadena(char a[], char b[]);
 bool Transaccion_valida(Banco*this, int cantidad_p, int cantidad_c);
-//Funcion por si el usuario desea eliminar su cuenta 
-//o si es baneado del banco
-void Usuario_Delete(*Banco this);
-bool Cmp_Cadena(char *1, char *2);
+
+
 
 #endif
